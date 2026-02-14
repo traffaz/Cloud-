@@ -1,0 +1,411 @@
+<!-- Save as: index.html  (front-end only, no backend required) -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SweetCrumb Bakery</title>
+  <style>
+    :root{
+      --bg:#0b0b0f; --card:#141420; --text:#f3f4f6; --muted:#a1a1aa;
+      --accent:#f59e0b; --accent2:#6366f1;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:linear-gradient(180deg,#0b0b0f,#0f172a);
+    }
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1100px;margin:0 auto;padding:20px}
+
+    header{
+      position:sticky;top:0;z-index:10;
+      backdrop-filter:blur(10px);
+      background:rgba(11,11,15,.75);
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:14px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.4px}
+    .logo{
+      width:34px;height:34px;border-radius:10px;
+      background:radial-gradient(circle at 30% 30%, #fde68a, var(--accent) 55%, #b45309);
+      box-shadow:0 10px 25px rgba(245,158,11,.25);
+    }
+    .links{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted)}
+    .pill{
+      padding:10px 12px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+    }
+
+    .hero{
+      display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:center;
+      padding:34px 0;
+    }
+    .hero h1{margin:0 0 10px;font-size:clamp(2rem,4vw,3.1rem);line-height:1.05}
+    .hero p{margin:0 0 16px;color:var(--muted);font-size:1.05rem}
+    .cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .btn{
+      cursor:pointer;border:none;border-radius:14px;padding:12px 14px;font-weight:800;
+    }
+    .btnPrimary{background:var(--accent);color:#111827;box-shadow:0 12px 30px rgba(245,158,11,.25)}
+    .btnGhost{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.14)}
+    .heroCard{
+      border-radius:22px;padding:18px;
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(circle at 20% 20%, rgba(245,158,11,.25), transparent 55%),
+        radial-gradient(circle at 80% 30%, rgba(99,102,241,.25), transparent 50%),
+        rgba(255,255,255,.04);
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
+    }
+    .img{
+      height:150px;border-radius:18px;margin-bottom:10px;
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        linear-gradient(135deg, rgba(245,158,11,.35), rgba(99,102,241,.25)),
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 50%);
+    }
+    .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .name{font-weight:900}
+    .desc{margin:6px 0 0;color:var(--muted)}
+
+    section{padding:18px 0 30px}
+    .sectionTitle{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .sectionTitle h2{margin:0;font-size:1.35rem}
+    .filters{display:flex;gap:10px;flex-wrap:wrap}
+    .input{
+      padding:10px 12px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      color:var(--text);outline:none;
+    }
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .card{
+      background:rgba(20,20,32,.75);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:22px;padding:14px;
+      box-shadow:0 12px 40px rgba(0,0,0,.25);
+    }
+    .price{font-weight:900}
+    .tag{font-size:.85rem;color:var(--muted)}
+    footer{
+      color:var(--muted);
+      border-top:1px solid rgba(255,255,255,.08);
+      padding:18px 0;margin-top:26px;
+    }
+
+    /* Cart */
+    .badge{
+      min-width:22px;height:22px;padding:0 7px;border-radius:999px;
+      background:var(--accent);color:#111827;font-weight:900;
+      display:inline-flex;align-items:center;justify-content:center;
+    }
+    .cartBtn{display:flex;align-items:center;gap:8px}
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;z-index:30}
+    .drawer{
+      position:fixed;top:0;right:0;height:100%;width:min(420px,92vw);
+      background:rgba(10,10,16,.92);
+      border-left:1px solid rgba(255,255,255,.12);
+      transform:translateX(105%);transition:transform .25s ease;
+      z-index:40;padding:16px;display:flex;flex-direction:column;
+    }
+    .overlay.open{display:block}
+    .drawer.open{transform:translateX(0)}
+    .closeBtn{
+      cursor:pointer;border:none;border-radius:12px;padding:10px 12px;
+      background:rgba(255,255,255,.08);color:var(--text);
+    }
+    .items{margin-top:12px;display:flex;flex-direction:column;gap:10px;overflow:auto;padding-right:6px}
+    .item{
+      display:grid;grid-template-columns:1fr auto;gap:10px;
+      padding:12px;border-radius:18px;border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.04);
+    }
+    .qtyRow{display:flex;align-items:center;gap:8px}
+    .qtyBtn{
+      cursor:pointer;width:32px;height:32px;border-radius:10px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.05);color:var(--text);
+    }
+    .divider{height:1px;background:rgba(255,255,255,.10);margin:12px 0}
+    .totalRow{display:flex;align-items:center;justify-content:space-between;font-weight:950}
+    .note{color:var(--muted);font-size:.9rem;margin-top:8px}
+
+    @media (max-width: 980px){ .grid{grid-template-columns:repeat(2,1fr)} .hero{grid-template-columns:1fr} }
+    @media (max-width: 520px){ .grid{grid-template-columns:1fr} }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="container nav">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <span>SweetCrumb Bakery</span>
+    </div>
+    <nav class="links">
+      <a class="pill" href="#shop">Shop</a>
+      <a class="pill" href="#about">About</a>
+      <a class="pill" href="#contact">Contact</a>
+    </nav>
+    <button class="btn btnGhost pill cartBtn" id="openCart" aria-label="Open cart">
+      🛒 Cart <span class="badge" id="cartCount">0</span>
+    </button>
+  </div>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <div>
+      <h1>Fresh bakery goods, made daily.</h1>
+      <p>Pick your favorites, add to cart, and checkout (front-end demo).</p>
+      <div class="cta">
+        <a class="btn btnPrimary" href="#shop">Shop best-sellers</a>
+        <button class="btn btnGhost" id="openCart2">View cart</button>
+      </div>
+    </div>
+
+    <div class="heroCard">
+      <div class="img" title="Bakery highlight"></div>
+      <div class="row">
+        <div>
+          <div class="name">Today’s Special</div>
+          <div class="tag">Honey Butter Brioche</div>
+        </div>
+        <div class="price">$6.50</div>
+      </div>
+      <p class="desc">Soft, golden, lightly sweet—perfect for breakfast or dessert.</p>
+      <button class="btn btnPrimary" data-add="brioche">Add special to cart</button>
+    </div>
+  </section>
+
+  <section id="shop">
+    <div class="sectionTitle">
+      <h2>Shop</h2>
+      <div class="filters">
+        <input class="input" id="search" placeholder="Search products…" />
+        <select class="input" id="category">
+          <option value="all">All</option>
+          <option value="bread">Bread</option>
+          <option value="pastry">Pastry</option>
+          <option value="cake">Cakes</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid" id="productGrid"></div>
+  </section>
+
+  <section id="about">
+    <div class="sectionTitle"><h2>About</h2></div>
+    <div class="card">
+      <p class="desc" style="margin:0">
+        SweetCrumb is a demo bakery storefront. Replace products and add real payments later (e.g., Stripe).
+      </p>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="sectionTitle"><h2>Contact</h2></div>
+    <div class="card">
+      <p class="desc" style="margin:0">
+        Email: hello@sweetcrumb.example • Phone: +1 (000) 000-0000 • Address: 123 Baker St.
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    © <span id="year"></span> SweetCrumb Bakery — Front-end demo
+  </footer>
+</main>
+
+<!-- Cart Drawer -->
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer" aria-label="Cart drawer">
+  <div class="row">
+    <div>
+      <div class="name" style="font-size:1.2rem">Your Cart</div>
+      <div class="tag" id="cartHint">Add items to begin.</div>
+    </div>
+    <button class="closeBtn" id="closeCart">Close</button>
+  </div>
+
+  <div class="items" id="cartItems"></div>
+
+  <div class="divider"></div>
+  <div class="totalRow">
+    <span>Total</span>
+    <span id="cartTotal">$0.00</span>
+  </div>
+
+  <div style="margin-top:auto">
+    <div class="divider"></div>
+    <div class="name">Checkout (demo)</div>
+    <form id="checkoutForm" style="display:grid;gap:10px;margin-top:10px">
+      <input class="input" required name="name" placeholder="Full name" />
+      <input class="input" required type="email" name="email" placeholder="Email" />
+      <input class="input" required name="address" placeholder="Delivery address" />
+      <button class="btn btnPrimary" type="submit">Place order</button>
+    </form>
+    <div class="note" id="orderNote"></div>
+  </div>
+</aside>
+
+<script>
+  const products = [
+    { id:"croissant", name:"Butter Croissant", desc:"Flaky, golden, airy.", price:3.25, category:"pastry" },
+    { id:"painchoc",  name:"Pain au Chocolat", desc:"Classic chocolate-filled pastry.", price:3.75, category:"pastry" },
+    { id:"sourdough", name:"Sourdough Loaf", desc:"Tangy crust, soft center.", price:6.00, category:"bread" },
+    { id:"baguette",  name:"French Baguette", desc:"Crisp crust, light crumb.", price:2.50, category:"bread" },
+    { id:"cupcake",   name:"Vanilla Cupcake", desc:"Vanilla bean + buttercream.", price:2.95, category:"cake" },
+    { id:"brownie",   name:"Fudge Brownie", desc:"Rich, chewy chocolate square.", price:3.10, category:"cake" },
+    { id:"cinnamon",  name:"Cinnamon Roll", desc:"Swirled, iced, cozy.", price:3.60, category:"pastry" },
+    { id:"brioche",   name:"Honey Butter Brioche", desc:"Soft, lightly sweet brioche.", price:6.50, category:"bread" },
+  ];
+
+  const cart = new Map(); // id -> qty
+  const $ = (id) => document.getElementById(id);
+  const money = (n) => `$${n.toFixed(2)}`;
+
+  function filteredProducts(){
+    const q = $("search").value.trim().toLowerCase();
+    const cat = $("category").value;
+    return products.filter(p => {
+      const matchesQ = !q || (p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q));
+      const matchesCat = (cat === "all") || (p.category === cat);
+      return matchesQ && matchesCat;
+    });
+  }
+
+  function renderProducts(){
+    const grid = $("productGrid");
+    grid.innerHTML = "";
+    filteredProducts().forEach(p => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="img" aria-hidden="true"></div>
+        <div class="row">
+          <div class="name">${p.name}</div>
+          <div class="price">${money(p.price)}</div>
+        </div>
+        <div class="desc">${p.desc}</div>
+        <div class="row">
+          <span class="tag">Category: ${p.category}</span>
+          <button class="btn btnPrimary" data-add="${p.id}">Add</button>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function cartCount(){
+    let c = 0;
+    for (const q of cart.values()) c += q;
+    return c;
+  }
+
+  function cartTotal(){
+    let t = 0;
+    for (const [id, qty] of cart.entries()){
+      const p = products.find(x => x.id === id);
+      if (p) t += p.price * qty;
+    }
+    return t;
+  }
+
+  function renderCart(){
+    $("cartCount").textContent = cartCount();
+    $("cartTotal").textContent = money(cartTotal());
+    const items = $("cartItems");
+    items.innerHTML = "";
+
+    if (cart.size === 0){
+      $("cartHint").textContent = "Add items to begin.";
+      return;
+    }
+    $("cartHint").textContent = "Adjust quantities, then checkout.";
+
+    for (const [id, qty] of cart.entries()){
+      const p = products.find(x => x.id === id);
+      if (!p) continue;
+
+      const row = document.createElement("div");
+      row.className = "item";
+      row.innerHTML = `
+        <div>
+          <div class="name">${p.name}</div>
+          <div class="tag">${money(p.price)} each</div>
+        </div>
+        <div style="text-align:right">
+          <div class="qtyRow" style="justify-content:flex-end">
+            <button class="qtyBtn" data-dec="${id}" aria-label="Decrease">−</button>
+            <b>${qty}</b>
+            <button class="qtyBtn" data-inc="${id}" aria-label="Increase">+</button>
+          </div>
+          <div class="tag" style="margin-top:6px">${money(p.price * qty)}</div>
+        </div>
+      `;
+      items.appendChild(row);
+    }
+  }
+
+  function openCart(){
+    $("overlay").classList.add("open");
+    $("drawer").classList.add("open");
+    renderCart();
+  }
+  function closeCart(){
+    $("overlay").classList.remove("open");
+    $("drawer").classList.remove("open");
+  }
+
+  function addToCart(id){
+    cart.set(id, (cart.get(id) || 0) + 1);
+    renderCart();
+  }
+  function inc(id){ cart.set(id, (cart.get(id)||0) + 1); renderCart(); }
+  function dec(id){
+    const q = (cart.get(id)||0) - 1;
+    if (q <= 0) cart.delete(id); else cart.set(id, q);
+    renderCart();
+  }
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-add],[data-inc],[data-dec]");
+    if (!btn) return;
+    if (btn.dataset.add) addToCart(btn.dataset.add);
+    if (btn.dataset.inc) inc(btn.dataset.inc);
+    if (btn.dataset.dec) dec(btn.dataset.dec);
+  });
+
+  $("openCart").addEventListener("click", openCart);
+  $("openCart2").addEventListener("click", openCart);
+  $("closeCart").addEventListener("click", closeCart);
+  $("overlay").addEventListener("click", closeCart);
+
+  $("search").addEventListener("input", renderProducts);
+  $("category").addEventListener("change", renderProducts);
+
+  $("checkoutForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (cart.size === 0){
+      $("orderNote").textContent = "Your cart is empty—add something first 🙂";
+      return;
+    }
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    $("orderNote").textContent =
+      `Thanks, ${data.name}! (Demo) Order placed for ${money(cartTotal())}. Email: ${data.email}`;
+    cart.clear();
+    renderCart();
+    e.target.reset();
+  });
+
+  $("year").textContent = new Date().getFullYear();
+  renderProducts();
+  renderCart();
+</script>
+</body>
+</html>
