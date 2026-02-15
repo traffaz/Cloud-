@@ -1,10 +1,11 @@
-<!-- Save as: index.html  (front-end only, no backend required) -->
+<!-- Save as: index.html (front-end only) -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>NovaLearn — Digital School</title>
+
   <style>
     :root{
       --bg:#0b0b10; --card:#121224; --text:#f3f4f6; --muted:#a1a1aa;
@@ -47,6 +48,7 @@
     }
     .btnPrimary{background:var(--accent);color:#052e16;box-shadow:0 12px 30px rgba(34,197,94,.18)}
     .btnGhost{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.14)}
+
     .grid{display:grid;gap:14px}
     .card{
       background:rgba(18,18,36,.75);
@@ -54,6 +56,7 @@
       border-radius:22px;padding:14px;
       box-shadow:0 12px 40px rgba(0,0,0,.25);
     }
+
     .hero{
       display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:center;
       padding:34px 0;
@@ -71,16 +74,21 @@
     .sectionTitle h2{margin:0;font-size:1.35rem}
     .muted{color:var(--muted)}
     .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-    .img{
-      height:160px;border-radius:18px;margin-bottom:10px;
-      border:1px solid rgba(255,255,255,.10);
-      background:
-        linear-gradient(135deg, rgba(99,102,241,.28), rgba(34,197,94,.20)),
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,.14), transparent 50%);
-    }
     .row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
     .tag{font-size:.85rem;color:var(--muted)}
     .name{font-weight:950}
+
+    /* ✅ Real image container */
+    .img{
+      height:160px;border-radius:18px;margin-bottom:10px;
+      border:1px solid rgba(255,255,255,.10);
+      overflow:hidden;background:#0b0b10;
+    }
+    .img img{
+      width:100%;height:100%;
+      object-fit:cover;display:block;
+    }
+
     .input{
       padding:10px 12px;border-radius:14px;
       border:1px solid rgba(255,255,255,.12);
@@ -93,6 +101,7 @@
       padding:18px 0;margin-top:26px;
     }
     .twoCol{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
     .badge{
       display:inline-flex;align-items:center;gap:8px;
       padding:8px 10px;border-radius:999px;
@@ -101,7 +110,6 @@
       color:var(--muted);
       font-weight:800;
     }
-    .hide{display:none}
 
     /* Modal */
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;z-index:30}
@@ -176,8 +184,11 @@
       </div>
     </div>
 
+    <!-- ✅ Hero image -->
     <div class="card">
-      <div class="img" aria-hidden="true"></div>
+      <div class="img">
+        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1400&q=60" alt="Students learning online">
+      </div>
       <div class="row">
         <div>
           <div class="name">Featured Bootcamp</div>
@@ -197,8 +208,12 @@
       <h2>Programs</h2>
       <span class="muted">Choose a learning track</span>
     </div>
+
     <div class="cols">
       <div class="card">
+        <div class="img">
+          <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1400&q=60" alt="Web development">
+        </div>
         <div class="name">Web Development</div>
         <p class="muted">Front-end to full-stack, projects + portfolio.</p>
         <div class="row">
@@ -206,7 +221,11 @@
           <button class="btn btnGhost" data-filter="web">View courses</button>
         </div>
       </div>
+
       <div class="card">
+        <div class="img">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1400&q=60" alt="Data analytics">
+        </div>
         <div class="name">Data & Analytics</div>
         <p class="muted">SQL, dashboards, and practical analytics.</p>
         <div class="row">
@@ -214,7 +233,11 @@
           <button class="btn btnGhost" data-filter="data">View courses</button>
         </div>
       </div>
+
       <div class="card">
+        <div class="img">
+          <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1400&q=60" alt="Cloud computing">
+        </div>
         <div class="name">Cloud & DevOps</div>
         <p class="muted">Cloud basics, CI/CD, and deployment practices.</p>
         <div class="row">
@@ -239,8 +262,9 @@
         </select>
       </div>
     </div>
+
     <div class="grid" id="courseGrid" style="grid-template-columns:repeat(3,1fr)"></div>
-    <p class="muted" id="emptyState" class="hide" style="margin-top:12px;display:none">No courses match your search.</p>
+    <p class="muted" id="emptyState" style="margin-top:12px;display:none">No courses match your search.</p>
   </section>
 
   <!-- ABOUT -->
@@ -285,7 +309,7 @@
           <textarea class="input" required name="message" placeholder="Your message" rows="4"></textarea>
           <button class="btn btnPrimary" type="submit">Send</button>
         </form>
-        <div class="note" id="contactNote"></div>
+        <div class="tag" id="contactNote" style="margin-top:10px"></div>
       </div>
 
       <div class="card">
@@ -330,24 +354,41 @@
       </select>
       <button class="btn btnPrimary" type="submit">Submit application</button>
     </form>
-    <div class="note" id="applyNote"></div>
+    <div class="tag" id="applyNote" style="margin-top:10px"></div>
   </div>
 </div>
 
 <script>
   const courses = [
-    { id:"htmlcss", title:"HTML & CSS Foundations", track:"web", level:"Beginner", weeks:3, price:49 },
-    { id:"js", title:"JavaScript Essentials", track:"web", level:"Beginner", weeks:4, price:69 },
-    { id:"react", title:"React Basics", track:"web", level:"Intermediate", weeks:4, price:89 },
-    { id:"api", title:"APIs & Backend Basics", track:"web", level:"Intermediate", weeks:3, price:79 },
+    { id:"htmlcss", title:"HTML & CSS Foundations", track:"web", level:"Beginner", weeks:3, price:49,
+      img:"https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=1400&q=60" },
 
-    { id:"sql", title:"SQL for Analytics", track:"data", level:"Beginner", weeks:4, price:79 },
-    { id:"bi", title:"Dashboards with Power BI", track:"data", level:"Intermediate", weeks:3, price:89 },
-    { id:"stats", title:"Practical Statistics", track:"data", level:"Intermediate", weeks:4, price:99 },
+    { id:"js", title:"JavaScript Essentials", track:"web", level:"Beginner", weeks:4, price:69,
+      img:"https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1400&q=60" },
 
-    { id:"cloud101", title:"Cloud Fundamentals", track:"cloud", level:"Beginner", weeks:3, price:79 },
-    { id:"cicd", title:"CI/CD with GitHub Actions", track:"cloud", level:"Intermediate", weeks:3, price:99 },
-    { id:"deploy", title:"Deploy Web Apps", track:"cloud", level:"Intermediate", weeks:3, price:89 },
+    { id:"react", title:"React Basics", track:"web", level:"Intermediate", weeks:4, price:89,
+      img:"https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1400&q=60" },
+
+    { id:"api", title:"APIs & Backend Basics", track:"web", level:"Intermediate", weeks:3, price:79,
+      img:"https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&w=1400&q=60" },
+
+    { id:"sql", title:"SQL for Analytics", track:"data", level:"Beginner", weeks:4, price:79,
+      img:"https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1400&q=60" },
+
+    { id:"bi", title:"Dashboards with Power BI", track:"data", level:"Intermediate", weeks:3, price:89,
+      img:"https://images.unsplash.com/photo-1556155092-490a1ba16284?auto=format&fit=crop&w=1400&q=60" },
+
+    { id:"stats", title:"Practical Statistics", track:"data", level:"Intermediate", weeks:4, price:99,
+      img:"https://images.unsplash.com/photo-1526378722484-bd91ca387e72?auto=format&fit=crop&w=1400&q=60" },
+
+    { id:"cloud101", title:"Cloud Fundamentals", track:"cloud", level:"Beginner", weeks:3, price:79,
+      img:"https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1400&q=60" },
+
+    { id:"cicd", title:"CI/CD with GitHub Actions", track:"cloud", level:"Intermediate", weeks:3, price:99,
+      img:"https://images.unsplash.com/photo-1555952517-2e8e729e0b44?auto=format&fit=crop&w=1400&q=60" },
+
+    { id:"deploy", title:"Deploy Web Apps", track:"cloud", level:"Intermediate", weeks:3, price:89,
+      img:"https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1400&q=60" },
   ];
 
   const $ = (id) => document.getElementById(id);
@@ -381,7 +422,9 @@
       const el = document.createElement("div");
       el.className = "card";
       el.innerHTML = `
-        <div class="img" aria-hidden="true"></div>
+        <div class="img">
+          <img src="${c.img}" alt="${c.title}">
+        </div>
         <div class="row">
           <div class="name">${c.title}</div>
           <span class="badge">${trackLabel(c.track)}</span>
@@ -419,7 +462,8 @@
     const enroll = e.target.closest("[data-enroll]");
     if (enroll){
       openModal();
-      $("applyNote").textContent = `You selected: ${courses.find(x=>x.id===enroll.dataset.enroll).title}`;
+      const chosen = courses.find(x => x.id === enroll.dataset.enroll);
+      $("applyNote").textContent = chosen ? `You selected: ${chosen.title}` : "You selected a course.";
       return;
     }
   });
